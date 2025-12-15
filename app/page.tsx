@@ -13,21 +13,23 @@ const difficulties: Record<string, number> = {
   어려움: 16,
 };
 
+// 사진 파일은 public - artists 폴더에 있어야 합니다. //
+
 const artists = [
-  { name: "레오나르도 다빈치", image: "/artists/davinci.jpg" },
-  { name: "빈센트 반 고흐", image: "/artists/gogh.jpg" },
-  { name: "클로드 모네", image: "/artists/monet.jpg" },
-  { name: "파블로 피카소", image: "/artists/picasso.jpg" },
-  { name: "렘브란트", image: "/artists/rembrandt.jpg" },
-  { name: "미켈란젤로", image: "/artists/michelangelo.jpg" },
-  { name: "살바도르 달리", image: "/artists/dali.jpg" },
-  { name: "에드바르 뭉크", image: "/artists/munch.jpg" },
-  { name: "폴 세잔", image: "/artists/cezanne.jpg" },
-  { name: "앙리 마티스", image: "/artists/matisse.jpg" },
-  { name: "요하네스 베르메르", image: "/artists/vermeer.jpg" },
-  { name: "잭슨 폴록", image: "/artists/pollock.jpg" },
-  { name: "구스타프 클림트", image: "/artists/klimt.jpg" },
-  { name: "프리다 칼로", image: "/artists/kahlo.jpg" },
+  { name: "김삼일", image: "/artists/davinci.jpg" },
+  { name: "김삼일", image: "/artists/gogh.jpg" },
+  { name: "김삼일", image: "/artists/monet.jpg" },
+  { name: "김삼일", image: "/artists/picasso.jpg" },
+  { name: "김삼일", image: "/artists/rembrandt.jpg" },
+  { name: "김삼일", image: "/artists/michelangelo.jpg" },
+  { name: "김삼일", image: "/artists/dali.jpg" },
+  { name: "김삼일", image: "/artists/munch.jpg" },
+  { name: "김삼일", image: "/artists/cezanne.jpg" },
+  { name: "김삼일", image: "/artists/matisse.jpg" },
+  { name: "김삼일", image: "/artists/vermeer.jpg" },
+  { name: "김삼일", image: "/artists/pollock.jpg" },
+  { name: "김삼일", image: "/artists/klimt.jpg" },
+  { name: "김삼일", image: "/artists/kahlo.jpg" },
 ];
 
 const QUESTION_COUNT = 5;

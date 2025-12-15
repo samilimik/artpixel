@@ -1,3 +1,7 @@
+// artpixel - main page (typescript) //
+//             samilimik             //
+//     December 21, 2025 (Monday)    //
+
 "use client";
 
 import { useState } from "react";
@@ -79,7 +83,7 @@ export default function ArtPuzzleGame() {
         <div className="mt-6 text-sm text-gray-400">
           <span>소스코드: </span>
           <a
-            href="https://github.com/USERNAME/REPOSITORY"
+            href="https://github.com/samilimik/artpixel"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-yellow-400"

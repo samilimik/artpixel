@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -73,16 +72,16 @@ export default function ArtPuzzleGame() {
               }}
             >
               {Array.from({ length: pieces }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="aspect-square bg-gray-300"
-                  style={{
-                    backgroundImage: `url(${artist.image})`,
-                    backgroundSize: `${Math.sqrt(pieces) * 100}%`,
-                    backgroundPosition: `${(i % Math.sqrt(pieces)) * 100}% ${Math.floor(i / Math.sqrt(pieces)) * 100}%`,
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                />
+<div
+  key={i}
+  className="aspect-square bg-gray-300"
+  style={{
+    backgroundImage: `url(${artist.image})`,
+    backgroundSize: `${Math.sqrt(pieces) * 100}%`,
+    backgroundPosition: `${(i % Math.sqrt(pieces)) * 100}% ${Math.floor(i / Math.sqrt(pieces)) * 100}%`,
+  }}
+/>
+
               ))}
             </div>
             <p className="mt-4 text-center text-sm">이 그림을 그린 화가는 누구일까요?</p>

@@ -2,7 +2,7 @@
 
 Simple art guessing game
 
-This thing is not still done yet
+not still done yet fr
 
 ## Main Link
 https://artpixel.vercel.app/

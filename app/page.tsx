@@ -40,10 +40,7 @@ export default function ArtPuzzleGame() {
   const [revealed, setRevealed] = useState(false);
 
   const startGame = (level: string) => {
-    const selected = [...artists]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, QUESTION_COUNT);
-
+    const selected = [...artists].sort(() => Math.random() - 0.5).slice(0, QUESTION_COUNT);
     setQuizArtists(selected);
     setDifficulty(level);
     setCurrentIndex(0);
@@ -63,42 +60,16 @@ export default function ArtPuzzleGame() {
   const pieces = difficulty ? difficulties[difficulty] : 0;
   const gridSize = Math.sqrt(pieces);
 
-  const checkAnswer = () => {
-    if (!artist) return;
-
-    if (answer.trim() === artist.name) {
-      setScore((s) => s + 1);
-      setRevealed(true);
-    } else {
-      const nextTries = tries + 1;
-      setTries(nextTries);
-      if (nextTries >= MAX_TRIES) {
-        setRevealed(true);
-      }
-    }
-  };
-
-  const nextQuestion = () => {
-    const nextIndex = currentIndex + 1;
-    setCurrentIndex(nextIndex);
-
-    if (difficulty) {
-      resetQuestion(difficulty);
-    }
-  };
-
-  // 🎉 결과 화면
   if (difficulty && currentIndex >= quizArtists.length) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 font-mono">
-        <h1 className="text-3xl">🎮 GAME OVER</h1>
-        <p className="text-xl">
-          SCORE: {score} / {quizArtists.length}
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <h1 className="text-3xl text-red-500 drop-shadow-[4px_4px_0_#000]">
+          GAME OVER
+        </h1>
+        <p className="text-yellow-400">
+          SCORE {score} / {quizArtists.length}
         </p>
-        <button
-          onClick={() => setDifficulty(null)}
-          className="px-4 py-2 border rounded"
-        >
+        <button onClick={() => setDifficulty(null)} className="pixel-button">
           RESTART
         </button>
       </div>
@@ -106,17 +77,15 @@ export default function ArtPuzzleGame() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6 font-mono bg-[#f5f5f5]">
-      <h1 className="text-3xl">🎨 PIXEL ART QUIZ</h1>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6">
+      <h1 className="text-3xl text-yellow-400 tracking-widest drop-shadow-[4px_4px_0_#000]">
+        PIXEL ART QUIZ
+      </h1>
 
       {!difficulty && (
         <div className="flex gap-4">
           {Object.keys(difficulties).map((level) => (
-            <button
-              key={level}
-              onClick={() => startGame(level)}
-              className="px-4 py-2 border bg-white hover:bg-gray-200"
-            >
+            <button key={level} onClick={() => startGame(level)} className="pixel-button">
               {level}
             </button>
           ))}
@@ -124,67 +93,61 @@ export default function ArtPuzzleGame() {
       )}
 
       {difficulty && artist && (
-        <div className="w-full max-w-xl border bg-white p-4 shadow">
-          <p className="text-center mb-1">
-            문제 {currentIndex + 1} / {quizArtists.length}
-          </p>
-          <p className="text-center mb-2">
-            시도: {tries} / {MAX_TRIES}
-          </p>
+        <div className="pixel-box w-full max-w-xl p-4">
+          <div className="flex justify-between mb-2 text-sm text-yellow-300">
+            <span>STAGE {currentIndex + 1}</span>
+            <span>TRY {tries}/{MAX_TRIES}</span>
+          </div>
 
           <div
-            className="grid gap-1 mx-auto"
-            style={{
-              gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-              imageRendering: "pixelated",
-            }}
+            className="grid gap-1 mx-auto mb-4"
+            style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
           >
             {order.map((piece, i) => (
               <motion.div
                 key={i}
-                className="aspect-square bg-gray-400"
+                className="aspect-square border border-black"
                 style={{
                   backgroundImage: `url(${artist.image})`,
                   backgroundSize: `${gridSize * 100}%`,
-                  backgroundPosition: `${
-                    (piece % gridSize) * 100
-                  }% ${Math.floor(piece / gridSize) * 100}%`,
+                  backgroundPosition: `${(piece % gridSize) * 100}% ${Math.floor(piece / gridSize) * 100}%`,
                   imageRendering: "pixelated",
                 }}
               />
             ))}
           </div>
 
-          <div className="mt-4 flex flex-col gap-2">
-            <input
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              placeholder="화가 이름 입력"
-              disabled={revealed}
-              className="border px-3 py-2 font-mono"
-            />
+          <input
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            disabled={revealed}
+            placeholder="ARTIST NAME?"
+            className="pixel-input w-full mb-2"
+          />
 
-            {!revealed ? (
-              <button
-                onClick={checkAnswer}
-                className="border px-4 py-2 bg-gray-100"
-              >
-                정답 확인
+          {!revealed ? (
+            <button onClick={() => {
+              if (answer.trim() === artist.name) {
+                setScore((s) => s + 1);
+                setRevealed(true);
+              } else {
+                setTries((t) => t + 1);
+                if (tries + 1 >= MAX_TRIES) setRevealed(true);
+              }
+            }} className="pixel-button w-full">
+              CHECK
+            </button>
+          ) : (
+            <div className="text-center">
+              <p className="text-green-400 mb-2">ANSWER: {artist.name}</p>
+              <button onClick={() => {
+                setCurrentIndex((i) => i + 1);
+                resetQuestion(difficulty);
+              }} className="pixel-button w-full">
+                NEXT →
               </button>
-            ) : (
-              <>
-                <p className="text-center font-bold">
-                  정답: {artist.name}
-                </p>
-                <button
-                  onClick={nextQuestion}
-                  className="border px-4 py-2 bg-gray-200"
-                >
-                  다음 문제 →
-                </button>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -79,7 +79,7 @@ export default function ArtPuzzleGame() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6">
       <h1 className="text-3xl text-yellow-400 tracking-widest drop-shadow-[4px_4px_0_#000]">
-        PIXEL ART QUIZ
+        서양시대 그림 맞추기
       </h1>
 
       {!difficulty && (

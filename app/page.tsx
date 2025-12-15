@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 // 난이도별 설정
@@ -10,7 +10,7 @@ const difficulties: Record<string, number> = {
   어려움: 16,
 };
 
-// 화가 데이터 (20명)
+// 화가 데이터
 const artists = [
   { name: "레오나르도 다빈치", image: "/artists/davinci.jpg" },
   { name: "빈센트 반 고흐", image: "/artists/gogh.jpg" },
@@ -36,16 +36,33 @@ const artists = [
 
 export default function ArtPuzzleGame() {
   const [difficulty, setDifficulty] = useState<string | null>(null);
-  const [artist, setArtist] = useState<{ name: string; image: string } | null>(null);
+  const [artist, setArtist] = useState<any>(null);
+  const [order, setOrder] = useState<number[]>([]);
+  const [answer, setAnswer] = useState("");
+  const [result, setResult] = useState<null | boolean>(null);
 
   const startGame = (level: string) => {
     const randomArtist = artists[Math.floor(Math.random() * artists.length)];
+    const pieceCount = difficulties[level];
+
+    const shuffled = [...Array(pieceCount).keys()].sort(
+      () => Math.random() - 0.5
+    );
+
     setArtist(randomArtist);
     setDifficulty(level);
+    setOrder(shuffled);
+    setAnswer("");
+    setResult(null);
   };
 
   const pieces = difficulty ? difficulties[difficulty] : 0;
   const gridSize = Math.sqrt(pieces);
+
+  const checkAnswer = () => {
+    if (!artist) return;
+    setResult(answer.trim() === artist.name);
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6">
@@ -67,7 +84,7 @@ export default function ArtPuzzleGame() {
 
       {difficulty && artist && (
         <div className="w-full max-w-xl border rounded-xl p-4 shadow">
-          <p className="mb-2 text-center">난이도: {difficulty}</p>
+          <p className="text-center mb-2">난이도: {difficulty}</p>
 
           <div
             className="grid gap-1"
@@ -75,26 +92,48 @@ export default function ArtPuzzleGame() {
               gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
             }}
           >
-            {Array.from({ length: pieces }).map((_, i) => (
+            {order.map((pieceIndex, i) => (
               <motion.div
                 key={i}
                 className="aspect-square bg-gray-300"
                 style={{
                   backgroundImage: `url(${artist.image})`,
                   backgroundSize: `${gridSize * 100}%`,
-                  backgroundPosition: `${(i % gridSize) * 100}% ${Math.floor(i / gridSize) * 100}%`,
+                  backgroundPosition: `${
+                    (pieceIndex % gridSize) * 100
+                  }% ${Math.floor(pieceIndex / gridSize) * 100}%`,
                 }}
                 whileHover={{ scale: 1.05 }}
               />
             ))}
           </div>
 
-          <p className="mt-4 text-center text-sm">
-            이 그림을 그린 화가는 누구일까요?
-          </p>
-          <p className="mt-2 text-center font-semibold">
-            정답: {artist.name}
-          </p>
+          {/* 정답 입력 */}
+          <div className="mt-4 flex flex-col gap-2">
+            <input
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="화가 이름을 입력하세요"
+              className="border rounded px-3 py-2"
+            />
+            <button
+              onClick={checkAnswer}
+              className="px-4 py-2 border rounded-lg hover:bg-gray-100"
+            >
+              정답 확인
+            </button>
+          </div>
+
+          {/* 결과 표시 */}
+          {result !== null && (
+            <p
+              className={`mt-3 text-center font-semibold ${
+                result ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {result ? "🎉 정답입니다!" : "❌ 틀렸어요. 다시 도전!"}
+            </p>
+          )}
 
           <div className="mt-4 flex justify-center">
             <button

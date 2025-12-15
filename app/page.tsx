@@ -40,7 +40,9 @@ export default function ArtPuzzleGame() {
   const [revealed, setRevealed] = useState(false);
 
   const startGame = (level: string) => {
-    const selected = [...artists].sort(() => Math.random() - 0.5).slice(0, QUESTION_COUNT);
+    const selected = [...artists]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, QUESTION_COUNT);
     setQuizArtists(selected);
     setDifficulty(level);
     setCurrentIndex(0);
@@ -72,6 +74,19 @@ export default function ArtPuzzleGame() {
         <button onClick={() => setDifficulty(null)} className="pixel-button">
           RESTART
         </button>
+
+        {/* Footer */}
+        <div className="mt-6 text-sm text-gray-400">
+          <span>소스코드: </span>
+          <a
+            href="https://github.com/USERNAME/REPOSITORY"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-yellow-400"
+          >
+            GitHub
+          </a>
+        </div>
       </div>
     );
   }
@@ -85,7 +100,11 @@ export default function ArtPuzzleGame() {
       {!difficulty && (
         <div className="flex gap-4">
           {Object.keys(difficulties).map((level) => (
-            <button key={level} onClick={() => startGame(level)} className="pixel-button">
+            <button
+              key={level}
+              onClick={() => startGame(level)}
+              className="pixel-button"
+            >
               {level}
             </button>
           ))}
@@ -126,30 +145,51 @@ export default function ArtPuzzleGame() {
           />
 
           {!revealed ? (
-            <button onClick={() => {
-              if (answer.trim() === artist.name) {
-                setScore((s) => s + 1);
-                setRevealed(true);
-              } else {
-                setTries((t) => t + 1);
-                if (tries + 1 >= MAX_TRIES) setRevealed(true);
-              }
-            }} className="pixel-button w-full">
+            <button
+              onClick={() => {
+                if (answer.trim() === artist.name) {
+                  setScore((s) => s + 1);
+                  setRevealed(true);
+                } else {
+                  setTries((t) => t + 1);
+                  if (tries + 1 >= MAX_TRIES) setRevealed(true);
+                }
+              }}
+              className="pixel-button w-full"
+            >
               CHECK
             </button>
           ) : (
             <div className="text-center">
-              <p className="text-green-400 mb-2">ANSWER: {artist.name}</p>
-              <button onClick={() => {
-                setCurrentIndex((i) => i + 1);
-                resetQuestion(difficulty);
-              }} className="pixel-button w-full">
+              <p className="text-green-400 mb-2">
+                ANSWER: {artist.name}
+              </p>
+              <button
+                onClick={() => {
+                  setCurrentIndex((i) => i + 1);
+                  resetQuestion(difficulty);
+                }}
+                className="pixel-button w-full"
+              >
                 NEXT →
               </button>
             </div>
           )}
         </div>
       )}
+
+      {/* Footer */}
+      <div className="mt-8 text-sm text-gray-400">
+        <span>소스코드: </span>
+        <a
+          href="https://github.com/samilimik/artpixel"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-yellow-400"
+        >
+          GitHub
+        </a>
+      </div>
     </div>
   );
 }

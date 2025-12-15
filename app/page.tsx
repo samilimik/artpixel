@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 // 난이도별 설정
-const difficulties = {
+const difficulties: Record<string, number> = {
   쉬움: 4,
   중간: 9,
   어려움: 16,
@@ -37,16 +35,17 @@ const artists = [
 ];
 
 export default function ArtPuzzleGame() {
-  const [difficulty, setDifficulty] = useState(null);
-  const [artist, setArtist] = useState(null);
+  const [difficulty, setDifficulty] = useState<string | null>(null);
+  const [artist, setArtist] = useState<{ name: string; image: string } | null>(null);
 
-  const startGame = (level) => {
+  const startGame = (level: string) => {
     const randomArtist = artists[Math.floor(Math.random() * artists.length)];
     setArtist(randomArtist);
     setDifficulty(level);
   };
 
   const pieces = difficulty ? difficulties[difficulty] : 0;
+  const gridSize = Math.sqrt(pieces);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6">
@@ -55,45 +54,60 @@ export default function ArtPuzzleGame() {
       {!difficulty && (
         <div className="flex gap-4">
           {Object.keys(difficulties).map((level) => (
-            <Button key={level} onClick={() => startGame(level)}>
+            <button
+              key={level}
+              onClick={() => startGame(level)}
+              className="px-4 py-2 border rounded-lg hover:bg-gray-100"
+            >
               {level}
-            </Button>
+            </button>
           ))}
         </div>
       )}
 
       {difficulty && artist && (
-        <Card className="w-full max-w-xl">
-          <CardContent className="p-4">
-            <p className="mb-2 text-center">난이도: {difficulty}</p>
-            <div
-              className="grid gap-1"
-              style={{
-                gridTemplateColumns: `repeat(${Math.sqrt(pieces)}, 1fr)`,
+        <div className="w-full max-w-xl border rounded-xl p-4 shadow">
+          <p className="mb-2 text-center">난이도: {difficulty}</p>
+
+          <div
+            className="grid gap-1"
+            style={{
+              gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+            }}
+          >
+            {Array.from({ length: pieces }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="aspect-square bg-gray-300"
+                style={{
+                  backgroundImage: `url(${artist.image})`,
+                  backgroundSize: `${gridSize * 100}%`,
+                  backgroundPosition: `${(i % gridSize) * 100}% ${Math.floor(i / gridSize) * 100}%`,
+                }}
+                whileHover={{ scale: 1.05 }}
+              />
+            ))}
+          </div>
+
+          <p className="mt-4 text-center text-sm">
+            이 그림을 그린 화가는 누구일까요?
+          </p>
+          <p className="mt-2 text-center font-semibold">
+            정답: {artist.name}
+          </p>
+
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={() => {
+                setDifficulty(null);
+                setArtist(null);
               }}
+              className="px-4 py-2 border rounded-lg hover:bg-gray-100"
             >
-              {Array.from({ length: pieces }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="aspect-square bg-gray-300"
-                  style={{
-                    backgroundImage: `url(${artist.image})`,
-                    backgroundSize: `${Math.sqrt(pieces) * 100}%`,
-                    backgroundPosition: `${(i % Math.sqrt(pieces)) * 100}% ${Math.floor(i / Math.sqrt(pieces)) * 100}%`,
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                />
-              ))}
-            </div>
-            <p className="mt-4 text-center text-sm">이 그림을 그린 화가는 누구일까요?</p>
-            <p className="mt-2 text-center font-semibold">정답: {artist.name}</p>
-            <div className="mt-4 flex justify-center">
-              <Button variant="outline" onClick={() => { setDifficulty(null); setArtist(null); }}>
-                다시하기
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              다시하기
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

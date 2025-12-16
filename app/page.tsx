@@ -148,17 +148,18 @@ export default function ArtPuzzleGame() {
           </div>
 
           <input
-            {error && !revealed && (
-              <p className="text-red-400 text-sm mb-2 text-center">
-                ❌ {error}
-              </p>
-            )}
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             disabled={revealed}
             placeholder="ARTIST NAME?"
             className="pixel-input w-full mb-2"
           />
+
+          {error && !revealed && (
+            <p className="text-red-400 text-sm mb-2 text-center">
+              ❌ {error}
+            </p>
+          )}
 
           {!revealed ? (
             <button

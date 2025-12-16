@@ -1,9 +1,5 @@
 "use client";
 
-// artpixel - main page (typescript) //
-//             samilimik             //
-//     December 21, 2025 (Monday)    //
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 

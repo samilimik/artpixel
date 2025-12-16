@@ -9,10 +9,6 @@ const difficulties: Record<string, number> = {
   어려움: 16,
 };
 
-// 아티스트 추가 방법 - { name: "아티스트 이름", image: "폴더 경로" } , //
-// 작성 예시 - { name: "삼일", image: "/artists/samile.jpg" }, //
-// 사진 파일은 public/artists 폴더에 있어야 합니다. //
-
 const artists = [
   { name: "레오나르도 다빈치", image: "/artists/davinci.jpg" },
   { name: "빈센트 반 고흐", image: "/artists/gogh.jpg" },

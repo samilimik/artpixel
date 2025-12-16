@@ -37,6 +37,8 @@ const artists = [
 const QUESTION_COUNT = 5;
 const MAX_TRIES = 3;
 
+const [error, setError] = useState<string | null>(null);
+
 export default function ArtPuzzleGame() {
   const [difficulty, setDifficulty] = useState<string | null>(null);
   const [quizArtists, setQuizArtists] = useState<any[]>([]);
@@ -64,6 +66,7 @@ export default function ArtPuzzleGame() {
     setAnswer("");
     setTries(0);
     setRevealed(false);
+    setError(null);
   };
 
   const artist = quizArtists[currentIndex];
@@ -145,6 +148,11 @@ export default function ArtPuzzleGame() {
           </div>
 
           <input
+            {error && !revealed && (
+              <p className="text-red-400 text-sm mb-2 text-center">
+                ❌ {error}
+              </p>
+            )}
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             disabled={revealed}
@@ -158,8 +166,10 @@ export default function ArtPuzzleGame() {
                 if (answer.trim() === artist.name) {
                   setScore((s) => s + 1);
                   setRevealed(true);
+                  setError(null);
                 } else {
                   setTries((t) => t + 1);
+                  setError("다시 한번 잘 생각해봐요."
                   if (tries + 1 >= MAX_TRIES) setRevealed(true);
                 }
               }}

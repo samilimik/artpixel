@@ -170,7 +170,7 @@ export default function ArtPuzzleGame() {
                   setError(null);
                 } else {
                   setTries((t) => t + 1);
-                  setError("다시 한번 잘 생각해봐요."
+                  setError("다시 한번 잘 생각해봐요.");
                   if (tries + 1 >= MAX_TRIES) setRevealed(true);
                 }
               }}

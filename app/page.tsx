@@ -29,8 +29,6 @@ const artists = [
 const QUESTION_COUNT = 5;
 const MAX_TRIES = 3;
 
-const [error, setError] = useState<string | null>(null);
-
 export default function ArtPuzzleGame() {
   const [difficulty, setDifficulty] = useState<string | null>(null);
   const [quizArtists, setQuizArtists] = useState<any[]>([]);
@@ -40,6 +38,7 @@ export default function ArtPuzzleGame() {
   const [score, setScore] = useState(0);
   const [tries, setTries] = useState(0);
   const [revealed, setRevealed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const startGame = (level: string) => {
     const selected = [...artists]

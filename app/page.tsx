@@ -3,35 +3,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-const difficulties: Record<string, number> = {
+import { Difficulty, Artist } from "@/lib/types";
+import { pickArtists, questionTypeByDifficulty } from "@/lib/questions";
+
+const difficulties: Record<Difficulty, number> = {
   쉬움: 4,
   중간: 9,
   어려움: 16,
 };
 
-const artists = [
-  { name: "레오나르도 다빈치", image: "/artists/davinci.jpg" },
-  { name: "빈센트 반 고흐", image: "/artists/gogh.jpg" },
-  { name: "클로드 모네", image: "/artists/monet.jpg" },
-  { name: "파블로 피카소", image: "/artists/picasso.jpg" },
-  { name: "렘브란트", image: "/artists/rembrandt.jpg" },
-  { name: "미켈란젤로", image: "/artists/michelangelo.jpg" },
-  { name: "살바도르 달리", image: "/artists/dali.jpg" },
-  { name: "에드바르 뭉크", image: "/artists/munch.jpg" },
-  { name: "폴 세잔", image: "/artists/cezanne.jpg" },
-  { name: "앙리 마티스", image: "/artists/matisse.jpg" },
-  { name: "요하네스 베르메르", image: "/artists/vermeer.jpg" },
-  { name: "잭슨 폴록", image: "/artists/pollock.jpg" },
-  { name: "구스타프 클림트", image: "/artists/klimt.jpg" },
-  { name: "프리다 칼로", image: "/artists/kahlo.jpg" },
-];
-
 const QUESTION_COUNT = 5;
 const MAX_TRIES = 3;
 
-export default function ArtPuzzleGame() {
-  const [difficulty, setDifficulty] = useState<string | null>(null);
-  const [quizArtists, setQuizArtists] = useState<any[]>([]);
+export default function ArtPuzzleGamePage() {
+  const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
+  const [quizArtists, setQuizArtists] = useState<Artist[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [order, setOrder] = useState<number[]>([]);
   const [answer, setAnswer] = useState("");
@@ -40,10 +26,8 @@ export default function ArtPuzzleGame() {
   const [revealed, setRevealed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const startGame = (level: string) => {
-    const selected = [...artists]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, QUESTION_COUNT);
+  const startGame = (level: Difficulty) => {
+    const selected = pickArtists(level, QUESTION_COUNT);
     setQuizArtists(selected);
     setDifficulty(level);
     setCurrentIndex(0);
@@ -51,7 +35,7 @@ export default function ArtPuzzleGame() {
     resetQuestion(level);
   };
 
-  const resetQuestion = (level: string) => {
+  const resetQuestion = (level: Difficulty) => {
     const count = difficulties[level];
     setOrder([...Array(count).keys()].sort(() => Math.random() - 0.5));
     setAnswer("");
@@ -63,6 +47,9 @@ export default function ArtPuzzleGame() {
   const artist = quizArtists[currentIndex];
   const pieces = difficulty ? difficulties[difficulty] : 0;
   const gridSize = Math.sqrt(pieces);
+  const questionType = difficulty
+    ? questionTypeByDifficulty[difficulty]
+    : null;
 
   if (difficulty && currentIndex >= quizArtists.length) {
     return (
@@ -73,22 +60,12 @@ export default function ArtPuzzleGame() {
         <p className="text-yellow-400">
           SCORE {score} / {quizArtists.length}
         </p>
-        <button onClick={() => setDifficulty(null)} className="pixel-button">
+        <button
+          onClick={() => setDifficulty(null)}
+          className="pixel-button"
+        >
           RESTART
         </button>
-
-        {/* Footer */}
-        <div className="mt-6 text-sm text-gray-400">
-          <span>소스코드: </span>
-          <a
-            href="https://github.com/samilimik/artpixel"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-yellow-400"
-          >
-            GitHub
-          </a>
-        </div>
       </div>
     );
   }
@@ -101,7 +78,7 @@ export default function ArtPuzzleGame() {
 
       {!difficulty && (
         <div className="flex gap-4">
-          {Object.keys(difficulties).map((level) => (
+          {(Object.keys(difficulties) as Difficulty[]).map((level) => (
             <button
               key={level}
               onClick={() => startGame(level)}
@@ -120,6 +97,19 @@ export default function ArtPuzzleGame() {
             <span>TRY {tries}/{MAX_TRIES}</span>
           </div>
 
+          <p className="text-center text-yellow-300 mb-2">
+            {questionType === "COMMON_PERIOD" && "이 그림들의 공통 시대는?"}
+            {questionType === "TITLE" && "이 그림의 제목은?"}
+            {questionType === "ARTIST_AND_PERIOD" &&
+              "작가 이름과 시대를 입력하세요"}
+          </p>
+
+          {difficulty === "어려움" && (
+            <p className="text-xs text-gray-400 text-center mb-2">
+              예시: 빈센트 반 고흐 / 후기 인상주의
+            </p>
+          )}
+
           <div
             className="grid gap-1 mx-auto mb-4"
             style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
@@ -131,7 +121,9 @@ export default function ArtPuzzleGame() {
                 style={{
                   backgroundImage: `url(${artist.image})`,
                   backgroundSize: `${gridSize * 100}%`,
-                  backgroundPosition: `${(piece % gridSize) * 100}% ${Math.floor(piece / gridSize) * 100}%`,
+                  backgroundPosition: `${(piece % gridSize) * 100}% ${
+                    Math.floor(piece / gridSize) * 100
+                  }%`,
                   imageRendering: "pixelated",
                 }}
               />
@@ -142,20 +134,36 @@ export default function ArtPuzzleGame() {
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             disabled={revealed}
-            placeholder="ARTIST NAME?"
+            placeholder="ANSWER?"
             className="pixel-input w-full mb-2"
           />
 
           {error && !revealed && (
-            <p className="text-red-400 text-sm mb-2 text-center">
-              ❌ {error}
-            </p>
+            <p className="text-red-400 text-sm mb-2 text-center">❌ {error}</p>
           )}
 
           {!revealed ? (
             <button
               onClick={() => {
-                if (answer.trim() === artist.name) {
+                let correct = false;
+
+                if (questionType === "COMMON_PERIOD") {
+                  correct = answer.trim() === artist.period;
+                }
+
+                if (questionType === "TITLE") {
+                  correct = answer.trim() === artist.title;
+                }
+
+                if (questionType === "ARTIST_AND_PERIOD") {
+                  const [name, period] = answer
+                    .split("/")
+                    .map((v) => v.trim());
+                  correct =
+                    name === artist.name && period === artist.period;
+                }
+
+                if (correct) {
                   setScore((s) => s + 1);
                   setRevealed(true);
                   setError(null);
@@ -172,7 +180,12 @@ export default function ArtPuzzleGame() {
           ) : (
             <div className="text-center">
               <p className="text-green-400 mb-2">
-                ANSWER: {artist.name}
+                {questionType === "COMMON_PERIOD" &&
+                  `ANSWER: ${artist.period}`}
+                {questionType === "TITLE" &&
+                  `ANSWER: ${artist.title}`}
+                {questionType === "ARTIST_AND_PERIOD" &&
+                  `ANSWER: ${artist.name} / ${artist.period}`}
               </p>
               <button
                 onClick={() => {
@@ -187,19 +200,6 @@ export default function ArtPuzzleGame() {
           )}
         </div>
       )}
-
-      {/* Footer */}
-      <div className="mt-8 text-sm text-gray-400">
-        <span>소스코드: </span>
-        <a
-          href="https://github.com/samilimik/artpixel"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-yellow-400"
-        >
-          GitHub
-        </a>
-      </div>
     </div>
   );
 }

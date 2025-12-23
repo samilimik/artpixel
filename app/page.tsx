@@ -98,7 +98,7 @@ export default function ArtPuzzleGamePage() {
           </div>
 
           <p className="text-center text-yellow-300 mb-2">
-            {questionType === "COMMON_PERIOD" && "이 그림들의 공통 시대는?"}
+            {questionType === "COMMON_PERIOD" && "이 그림의 시대는?"}
             {questionType === "TITLE" && "이 그림의 제목은?"}
             {questionType === "ARTIST_AND_PERIOD" &&
               "작가 이름과 시대를 입력하세요"}
